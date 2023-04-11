@@ -6,11 +6,11 @@ function App() {
   const [localData,setLocalData] = useState([]);
   
   useEffect(() => {
-    fetch('http://localhost:3000')
+    fetch('https://notes-adgu.onrender.com')
     .then(responce=>responce.json())
     .then(data=>{
       console.log(data.data)
-      setLocalData(data.data);
+      setLocalData(data.data.data.rows);
     })
     .catch(error=>{
     })
@@ -18,7 +18,7 @@ function App() {
 
   // Api call to delete element
   const deleteElement = (key)=>{
-    fetch('http://localhost:3000/deleteNote',{
+    fetch('https://notes-adgu.onrender.com/deleteNote',{
       method:'POST',
       headers:{
         'Content-Type':'application/json'
@@ -44,7 +44,7 @@ function App() {
         title:$('#title').val(),
         data:$('#data').val()
       }
-      fetch('http://localhost:3000/createNote',{
+      fetch('https://notes-adgu.onrender.com/createNote',{
         method:'POST',
         headers:{
           'Content-Type':'application/json'
