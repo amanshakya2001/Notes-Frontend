@@ -10,7 +10,7 @@ function App() {
     .then(responce=>responce.json())
     .then(data=>{
       console.log(data.data)
-      setLocalData(data.data.data.rows);
+      setLocalData(data.data.fields);
     })
     .catch(error=>{
     })
