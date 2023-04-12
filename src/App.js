@@ -27,7 +27,7 @@ function App() {
     })
     .then(responce=>responce.json())
     .then(data=>{
-      setLocalData(data.data);
+      setLocalData(data.data.rows);
     })
     .catch(error=>{
     })
@@ -53,7 +53,7 @@ function App() {
       })
       .then(responce=>responce.json())
       .then(data=>{
-        setLocalData(data.data);
+        setLocalData(data.data.rows);
         $('#title').val("");
         $('#data').val("");
       })
