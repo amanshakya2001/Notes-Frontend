@@ -71,6 +71,11 @@ function App() {
   
   return (
     <>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
+        <div class="container">
+          <a class="navbar-brand mx-auto fw-bold" href="/">Notes</a>
+        </div>
+      </nav>
       <section className="form-section">
         <div className="container">
           <form action="POST" className="w-75 mx-auto my-5" id="dataForm">
