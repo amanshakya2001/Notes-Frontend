@@ -73,19 +73,22 @@ function App() {
   
   return (
     <>
-    <div class="spinner-border position-absolute top-50 start-50" role="status">
-      <span class="visually-hidden">Loading...</span>
+    <div className="spinner-border position-absolute top-50 start-50" role="status">
+      <span className="visually-hidden">Loading...</span>
     </div>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light py-3 shadow">
-        <div class="container">
-          <a class="navbar-brand fw-bold" href="/">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 shadow">
+        <div className="container">
+          <a className="navbar-brand fw-bold" href="/">
             <img className="me-3" src="./images/Ellipse 1.png" alt="logo" />
             Notes
           </a>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active btn btn-primary text-white px-5 fw-bold" aria-current="page" href="#">Login</a>
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <a className="nav-link active btn btn-primary text-white px-5 fw-bold" aria-current="page" href="#">Login</a>
             </li>
           </ul>
         </div>
