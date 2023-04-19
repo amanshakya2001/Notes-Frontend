@@ -27,6 +27,10 @@ function App() {
         .catch(error=>{
         })
       } 
+      else{
+        $(".spinner-border").hide();
+        $("button").removeAttr("disabled");
+      }
     });
 
     return unsubscribe;
@@ -46,6 +50,7 @@ function App() {
   const logout = ()=>{
     signOut(auth).then(() => {
       setIsLogin(false);
+      setLocalData({});
     }).catch((error) => {
     });
   }
