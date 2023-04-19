@@ -11,6 +11,7 @@ function App() {
     .then(data=>{
       console.log(data.data)
       $(".spinner-border").hide();
+      $("button").removeAttr("disabled");
       setLocalData(data.data.rows);
     })
     .catch(error=>{
@@ -75,9 +76,11 @@ function App() {
     <div class="spinner-border position-absolute top-50 start-50" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light py-3 shadow">
         <div class="container">
-          <a class="navbar-brand mx-auto fw-bold" href="/">Notes</a>
+          <a class="navbar-brand fw-bold" href="/">
+            <img src="" alt="" />
+            Notes</a>
         </div>
       </nav>
       <section className="form-section">
@@ -91,7 +94,7 @@ function App() {
               <label htmlFor="data" className="form-label">Data</label>
               <input type="text" className="form-control" id="data" placeholder="Note" />
             </div>
-            <button type="submit" className="btn btn-primary">Submit</button>
+            <button type="submit" className="btn btn-primary" disabled>Submit</button>
           </form>
         </div>
       </section>
