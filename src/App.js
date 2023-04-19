@@ -1,22 +1,52 @@
 import { useState,useEffect } from "react";
 import $ from 'jquery';
-
+import { auth } from './firebase';
+import { signInWithPopup, GoogleAuthProvider,signOut } from "firebase/auth";
+const provider = new GoogleAuthProvider();
 
 function App() {
   const [localData,setLocalData] = useState([]);
+  const [isLogin,setIsLogin] = useState(false);
+  const [user,setUser] = useState("");
   
   useEffect(() => {
     fetch('https://notes-adgu.onrender.com')
     .then(responce=>responce.json())
     .then(data=>{
-      console.log(data.data)
       $(".spinner-border").hide();
       $("button").removeAttr("disabled");
       setLocalData(data.data.rows);
     })
     .catch(error=>{
     })
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setIsLogin(true);
+        setUser(user.email);
+      } 
+    });
+
+    return unsubscribe;
   }, []);
+
+  // google login
+  const googleLogin = ()=>{
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user = result.user;
+        setIsLogin(true);
+        setUser(user.email);
+      }).catch((error) => {
+      });
+  }
+
+  const logout = ()=>{
+    signOut(auth).then(() => {
+      setIsLogin(false);
+    }).catch((error) => {
+    });
+  }
+
 
   // Api call to delete element
   const deleteElement = (key)=>{
@@ -88,7 +118,11 @@ function App() {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link active btn btn-primary text-white px-5 fw-bold" aria-current="page" href="#">Login</a>
+              {!isLogin ?
+              <button className="nav-link active btn btn-primary text-white px-5 fw-bold" aria-current="page" onClick={googleLogin}>Login</button>:
+              <button className="nav-link btn btn-secondary text-white p-2 fw-bold rounded-circle" aria-current="page" onClick={logout}>{user[0].toUpperCase()}</button>
+              }
+              
             </li>
           </ul>
         </div>
