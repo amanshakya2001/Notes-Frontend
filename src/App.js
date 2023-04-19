@@ -109,8 +109,13 @@ function App() {
       </section>
       <section className="Notes">
         <div className="container">
+          <div className="card border-0 h-100">
+            <div className="card-body p-4">
+              <img src="./images/plus.png" alt="plus icon" className="mx-auto d-table" />
+            </div>
+          </div>
           {localData.length ? localData.map((element,index)=>{
-              return <div key={index} className="card">
+              return <div key={index} className="card border-0">
                   <div className="card-title py-2 px-4">{element.title}</div>
                   <div className="card-body px-4">{element.data}</div>
                   <div className="card-footer">{formatDateTime(element.datetime)} <button className="btn btn-danger rounded-circle p-2" onClick={()=>{deleteElement(element.title)}}>
