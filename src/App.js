@@ -10,6 +10,7 @@ function App() {
     .then(responce=>responce.json())
     .then(data=>{
       console.log(data.data)
+      $(".spinner-border").hide();
       setLocalData(data.data.rows);
     })
     .catch(error=>{
@@ -71,6 +72,9 @@ function App() {
   
   return (
     <>
+    <div class="spinner-border position-absolute top-50 start-50" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
         <div class="container">
           <a class="navbar-brand mx-auto fw-bold" href="/">Notes</a>
@@ -103,7 +107,7 @@ function App() {
                   </button>
                   </div>
                 </div>
-            }):<p className="text-center">No data found</p>}
+            }):<p className="text-center mt-5">No data found</p>}
         </div>
       </section>
     </>
