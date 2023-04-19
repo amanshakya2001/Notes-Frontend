@@ -10,19 +10,22 @@ function App() {
   const [user,setUser] = useState("");
   
   useEffect(() => {
-    fetch('https://notes-adgu.onrender.com')
-    .then(responce=>responce.json())
-    .then(data=>{
-      $(".spinner-border").hide();
-      $("button").removeAttr("disabled");
-      setLocalData(data.data.rows);
-    })
-    .catch(error=>{
-    })
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setIsLogin(true);
         setUser(user.email);
+        fetch('https://notes-adgu.onrender.com')
+        .then(responce=>responce.json())
+        .then(data=>{
+          $(".spinner-border").hide();
+          $("button").removeAttr("disabled");
+          let userdata = data.data.rows.filter((element)=>{
+            return element.username ==  user.email;
+          })
+          setLocalData(userdata);
+        })
+        .catch(error=>{
+        })
       } 
     });
 
@@ -59,7 +62,10 @@ function App() {
     })
     .then(responce=>responce.json())
     .then(data=>{
-      setLocalData(data.data.rows);
+      let userdata = data.data.rows.filter((element)=>{
+        return element.username == user;
+      })
+      setLocalData(userdata);
     })
     .catch(error=>{
     })
@@ -68,13 +74,14 @@ function App() {
   // Api call to add element
   $('#dataForm').submit((event)=>{
     event.preventDefault();
-    if($('#title').val() === "" || $('#data').val() === ""){
+    if($('#title').val() === "" || $('#data').val() === "" ){
       console.log("empty")
     }
     else{
       let value = {
         title:$('#title').val(),
-        data:$('#data').val()
+        data:$('#data').val(),
+        username:user
       }
       fetch('https://notes-adgu.onrender.com/createNote',{
         method:'POST',
@@ -85,11 +92,15 @@ function App() {
       })
       .then(responce=>responce.json())
       .then(data=>{
-        setLocalData(data.data.rows);
+        let userdata = data.data.rows.filter((element)=>{
+          return element.username == user;
+        })
+        setLocalData(userdata);
         $('#title').val("");
         $('#data').val("");
       })
       .catch(error=>{
+        console.log(error)
       })
     }
     return false;
