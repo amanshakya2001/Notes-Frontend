@@ -79,8 +79,17 @@ function App() {
       <nav class="navbar navbar-expand-lg navbar-light bg-light py-3 shadow">
         <div class="container">
           <a class="navbar-brand fw-bold" href="/">
-            <img src="" alt="" />
-            Notes</a>
+            <img className="me-3" src="./images/Ellipse 1.png" alt="logo" />
+            Notes
+          </a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active btn btn-primary text-white px-5 fw-bold" aria-current="page" href="#">Login</a>
+            </li>
+          </ul>
+        </div>
+
         </div>
       </nav>
       <section className="form-section">
