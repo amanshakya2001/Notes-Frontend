@@ -2,6 +2,8 @@ import { useState,useEffect } from "react";
 import $ from 'jquery';
 import { auth } from './firebase';
 import { signInWithPopup, GoogleAuthProvider,signOut } from "firebase/auth";
+import Swal from 'sweetalert2';
+
 const provider = new GoogleAuthProvider();
 
 function App() {
@@ -22,7 +24,8 @@ function App() {
           let userdata = data.data.rows.filter((element)=>{
             return element.username ==  user.email;
           })
-          setLocalData(userdata);
+          localDataHandler(userdata);
+          console.log("use effect");
         })
         .catch(error=>{
         })
@@ -43,6 +46,7 @@ function App() {
         const user = result.user;
         setIsLogin(true);
         setUser(user.email);
+        console.log("google login");
       }).catch((error) => {
       });
   }
@@ -51,6 +55,13 @@ function App() {
     signOut(auth).then(() => {
       setIsLogin(false);
       setLocalData({});
+      console.log("logout");
+      Swal.fire({
+        title: 'Success!',
+        text: 'Logout Sucessfully',
+        icon: 'success',
+        timer: 1000,
+      });
     }).catch((error) => {
     });
   }
@@ -58,6 +69,7 @@ function App() {
 
   // Api call to delete element
   const deleteElement = (key)=>{
+    $(".spinner-border").show();
     fetch('https://notes-adgu.onrender.com/deleteNote',{
       method:'POST',
       headers:{
@@ -70,19 +82,45 @@ function App() {
       let userdata = data.data.rows.filter((element)=>{
         return element.username == user;
       })
-      setLocalData(userdata);
+      localDataHandler(userdata);
+      $(".spinner-border").hide();
+      console.log("delete");
+      Swal.fire({
+        title: 'Success!',
+        text: 'Your Notes Deleted Sucessfully',
+        icon: 'success',
+        timer: 1000,
+      });
     })
     .catch(error=>{
     })
   }
 
   // Api call to add element
-  $('#dataForm').submit((event)=>{
+  const addData = (event)=>{
     event.preventDefault();
+    console.log("submit form");
+    $(".spinner-border").show();
     if($('#title').val() === "" || $('#data').val() === "" ){
-      console.log("empty")
+      $(".spinner-border").hide();
+      Swal.fire({
+        title: 'Error!',
+        text: 'Value should not be Empty',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
     }
     else{
+      if(!isLogin){
+        $(".spinner-border").hide();
+        Swal.fire({
+          title: 'Error!',
+          text: 'Login required',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
       let value = {
         title:$('#title').val(),
         data:$('#data').val(),
@@ -100,17 +138,30 @@ function App() {
         let userdata = data.data.rows.filter((element)=>{
           return element.username == user;
         })
-        setLocalData(userdata);
+        localDataHandler(userdata);
         $('#title').val("");
         $('#data').val("");
+        $(".spinner-border").hide();
+        $('.btn-close').click();
+        Swal.fire({
+          title: 'Success!',
+          text: 'Notes Added Sucessfully',
+          icon: 'success',
+          timer: 1000,
+          confirmButtonText: 'OK'
+        });
       })
       .catch(error=>{
         console.log(error)
       })
     }
-    return false;
-  })
+  }
 
+
+  // Set Local data
+  const localDataHandler =(data)=>{
+    setLocalData(data);
+  }
   // Format dateTime
   const formatDateTime = (element)=>{
     let date = element.split('T')
@@ -119,10 +170,10 @@ function App() {
   
   return (
     <>
-    <div className="spinner-border position-absolute top-50 start-50" role="status">
-      <span className="visually-hidden">Loading...</span>
-    </div>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 shadow">
+      <div className="spinner-border position-absolute top-50 start-50" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </div>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 shadow fixed-top">
         <div className="container">
           <a className="navbar-brand fw-bold" href="/">
             <img className="me-3" src="./images/Ellipse 1.png" alt="logo" />
@@ -135,8 +186,17 @@ function App() {
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item">
               {!isLogin ?
-              <button className="nav-link active btn btn-primary text-white px-5 fw-bold" aria-current="page" onClick={googleLogin}>Login</button>:
-              <button className="nav-link btn btn-secondary text-white p-2 fw-bold rounded-circle" aria-current="page" onClick={logout}>{user[0].toUpperCase()}</button>
+              <button className="nav-link active btn btn-primary text-white px-5 fw-bold rounded-pill py-2" aria-current="page" onClick={googleLogin}>Login</button>:
+              <ul className="navbar-nav">
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white fw-bold rounded-circle avtar" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  {user[0].toUpperCase()}
+                </a>
+                <ul class="dropdown-menu shadow">
+                  <li><a class="dropdown-item" href="#" onClick={logout}>Logout</a></li>
+                </ul>
+              </li>
+              </ul>
               }
               
             </li>
@@ -145,30 +205,15 @@ function App() {
 
         </div>
       </nav>
-      <section className="form-section">
-        <div className="container">
-          <form action="POST" className="w-75 mx-auto my-5" id="dataForm">
-            <div className="mb-3">
-              <label htmlFor="title" className="form-label">Title</label>
-              <input type="text" className="form-control" id="title" placeholder="Title" />
+      <section className="Notes mt-5 pt-5">
+        <div className="container mt-5">
+          {isLogin?<div className="card border-0 h-100 pointer" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <div className="card-body p-4 d-flex align-items-center">
+              <img src="./images/plus.png" alt="plus icon" className="mx-auto d-table" width={50} />
             </div>
-            <div className="mb-3">
-              <label htmlFor="data" className="form-label">Data</label>
-              <input type="text" className="form-control" id="data" placeholder="Note" />
-            </div>
-            <button type="submit" className="btn btn-primary" disabled>Submit</button>
-          </form>
-        </div>
-      </section>
-      <section className="Notes">
-        <div className="container">
-          <div className="card border-0 h-100">
-            <div className="card-body p-4">
-              <img src="./images/plus.png" alt="plus icon" className="mx-auto d-table" />
-            </div>
-          </div>
+          </div>:""}
           {localData.length ? localData.map((element,index)=>{
-              return <div key={index} className="card border-0">
+              return <div key={index} className="card border-0 hover">
                   <div className="card-title py-2 px-4">{element.title}</div>
                   <div className="card-body px-4">{element.data}</div>
                   <div className="card-footer">{formatDateTime(element.datetime)} <button className="btn btn-danger rounded-circle p-2" onClick={()=>{deleteElement(element.title)}}>
@@ -177,9 +222,32 @@ function App() {
                   </button>
                   </div>
                 </div>
-            }):<p className="text-center mt-5">No data found</p>}
+            }):isLogin?<p className="text-center mt-5">No data found</p>:<p className="text-center mt-5">Login to View your Notes</p>}
         </div>
       </section>
+      <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">Notes</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body">
+            <form className="my-3" id="dataForm" onSubmit={addData}>
+              <div className="mb-3">
+                <label htmlFor="title" className="form-label">Title</label>
+                <input type="text" className="form-control" id="title" placeholder="Title" />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="data" className="form-label">Data</label>
+                <input type="text" className="form-control" id="data" placeholder="Note" />
+              </div>
+              <button type="submit" className="btn btn-primary float-end mt-4 px-5" disabled>Submit</button>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
