@@ -170,6 +170,9 @@ function App() {
   
   return (
     <>
+      <div className="mobile-block">
+        <p>This Site Only Support in Desktop.</p>
+      </div>
       <div className="spinner-border position-absolute top-50 start-50" role="status">
         <span className="visually-hidden">Loading...</span>
       </div>
@@ -222,7 +225,7 @@ function App() {
                   </button>
                   </div>
                 </div>
-            }):isLogin?<p className="text-center mt-5">No data found</p>:<p className="text-center mt-5">Login to View your Notes</p>}
+            }):isLogin?<p className="text-center mt-5">No data found</p>:<p className="text-center mt-5 fs-1">Login to View your Notes</p>}
         </div>
       </section>
       <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
